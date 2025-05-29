@@ -6,46 +6,105 @@ class Pile:
     Defines a pile of cards. It supports placing a card at the top of the pile, the bottom of the pile, or random location.
     It can also take a card from the top, bottom, or random location.
     It can be shufelled and sorted.
+    The class assumes that it comes from a single deck. So no repetitions are allowed.
     """ 
-    def __init__(self, cards): # cards is a  list of cards
-        pass
+    def __init__(self, cards: list[Card]=None): # cards is a  list of cards
+        self.cards = list(cards) if cards else []
 
-    def __str__(self): #how to display the pile
-        pass
+    def _ensure_not_duplicate(self, card: Card):
+        if card in self:
+            raise ValueError(f"Card {card} already in pile.")
+    
+    def __contains__(self, card: Card):
+        return card in self.cards
 
-    def place_top(self, card): #places a card at the top of the pile
-        pass
+    def __str__(self): 
+        from card import Suit
+        #how to display the pile. This is done sorted by suit with each suit on a separate line
+        
+        dc = {}
+        for s in Suit: #initializes the display
+            dc[s]=[]
+        
+        for card in self.cards:
+            for key in dc:
+                if card.suit == key:
+                    dc[key].append(card)
+        display_string ='' # initializes a string to display
+        for s in Suit:
+            dc[s].sort() #sorts the cards from the suit in ascending order
+            display_string += (s.symbol + ' ')
+            for c in dc[s]:
+                display_string += (c.short_symbol() + ' ')
+            display_string += '\n'  
+        return display_string     
 
-    def place_bottom(self, card): #places a card at the bottom of the Pile
-        pass
+    def place_top(self, card: Card) -> None: #places cards at the top of the pile
+        self._ensure_not_duplicate(card)
+        self.cards.append(card)
 
-    def place_random(self, card): #places a card at a random location
-        pass
+    def place_bottom(self, card: Card) -> None: #places a card at the bottom of the Pile
+        self._ensure_not_duplicate(card)
+        self.cards.insert(0, card)
 
-    def take_top(self, n=1): #takes a number of cards from the top and returns the card
-        pass
+    def place_random(self, card: Card) -> None: #places a card at a random location
+        self._ensure_not_duplicate(card)
+        s = self.size()
+        index = random.randint(0, s-1)
+        self.cards.insert(index, card)
+        return index
 
-    def take_bottom(self, n=1):  #takes a number of cards from the bottom and returns a card
-        pass
+    def take_top(self, n=1)  -> list[Card]: #takes a number of cards from the top and returns the clist of cards
+        if n > self.size():
+            raise ValueError(f"List contains only {self.size()} elements. Cannot draw {n}.")
+        cards=[]
+        for _ in range(n):
+            c = self.cards.pop()
+            cards.append(c)
+        return cards
 
-    def take_random(self, n=1): #take a number of cards from random locations
-        pass
+    def take_bottom(self, n=1) -> list[Card]:  #takes a number of cards from the bottom and returns them as a list
+        if n > self.size():
+            raise ValueError(f"List contains only {self.size()} elements. Cannot draw {n}.")
+        cards = []
+        for _ in range(n):
+            c = self.cards.pop(0)
+            cards.append(c)
+        return cards
 
-    def remove(self, card): #removes a given card from a pile and returns None, if the card is not there. 
-        pass
+    def take_random(self, n=1) -> list[Card]: #take a number of cards from random locations and returns them as a list
+        if n > self.size():
+            raise ValueError(f"List contains only {self.size()} elements. Cannot draw {n}.")
+        cards = []
+        s = self.size() 
+        for _ in range(n):
+            index = random.randint(0,s-1)
+            c = self.cards.pop(index)
+            cards.append(c)
+            s -= 1 #decrease the size of the collection
+        return cards
 
-    def shuffle(self): #shuffles the pile
-        pass
+    def remove(self, card) -> None: #removes a given card from a pile and returns None, if the card is not there. 
+        if self.contains(card):
+            return self.cards.remove(card)
+        else:
+            return None
 
-    def sort(self): #sorts the pile in order suits are put alphabetically in order
-        pass
+    def shuffle(self) -> FileNotFoundError: #shuffles the pile
+        random.shuffle(self.cards)
 
-    def join(self, other): #joins two piles together
-        pass
+    def sort(self) -> None: #sorts the pile in order suits are put alphabetically in order
+        self.cards.sort()
 
-    def size(self): #gives the size of the pile
-        pass
+    def join(self, other) -> "Pile": #joins two piles together
+        return Pile(self.cards+other.cards)
 
-    def contains(self, card): #checks to see if a card is in the pile or not
-        pass
+    def size(self) -> int: #gives the size of the pile
+        return len(self.cards)
+    
+if __name__ == "__main__":
+    hand = Pile([Card(2,1), Card(13, 1), Card(10, 1), Card(11,2), Card(14,3), Card(8,3), Card(10,4), Card (14, 4)])
+    empty = Pile()
+    print(hand)
+    print(empty)
 

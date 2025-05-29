@@ -69,17 +69,25 @@ class Card:
     def __str__(self): 
         #prints only the first letter for face cards or the number otherwise. 
         #prints the symbol of the card instead of the suit. 
+        s = self.short_symbol()
+        return f"{s} {self.suit}"
+        
+    
+    def short_symbol(self): #gets the symbol of the rank: the number or J Q K A
         s = Card.rank_names[self.rank] #gives the string of the card rank
         if self.rank == 10:
-            return f"{s} {self.suit}"
+            return s
         else:
-            return f"{s[0]} {self.suit}" 
+            return s[0]
    
     def __eq__(self, other):
         return self._to_tuple() == other._to_tuple()
     
     def _to_tuple(self): #converts to tuples
         return (self.suit, self.rank)
+    
+    def __lt__(self, other):
+        return self._to_tuple() < other._to_tuple()
     
     def is_equal_rank(self, other):
         return self.rank == other.rank
