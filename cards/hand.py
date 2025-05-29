@@ -1,6 +1,6 @@
 class Hand:
     """
-    The class is designed to handle standard playing cards. Jokers are not included
+    The class represents hands of cards. They can be as big as needed. 
     """
     def __init__(self, cards = None):
         self.cards = cards if cards is not None else []
