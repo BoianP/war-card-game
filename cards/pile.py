@@ -19,25 +19,23 @@ class Pile:
         return card in self.cards
 
     def __str__(self): 
-        from card import Suit
-        #how to display the pile. This is done sorted by suit with each suit on a separate line
-        
-        dc = {}
-        for s in Suit: #initializes the display
-            dc[s]=[]
-        
-        for card in self.cards:
-            for key in dc:
-                if card.suit == key:
-                    dc[key].append(card)
+        dc = self.group_by_suit()
         display_string ='' # initializes a string to display
-        for s in Suit:
-            dc[s].sort() #sorts the cards from the suit in ascending order
+        for s in dc:
             display_string += (s.symbol + ' ')
             for c in dc[s]:
                 display_string += (c.short_symbol() + ' ')
             display_string += '\n'  
         return display_string     
+    
+    def group_by_suit(self) -> dict:
+        from card import Suit
+        suit_map = {suit: [] for suit in Suit} #creates the empty hand to fill
+        for card in self.cards:
+            suit_map[card.suit].append(card)
+        for cards in suit_map.values():
+            cards.sort()
+        return suit_map
 
     def place_top(self, card: Card) -> None: #places cards at the top of the pile
         self._ensure_not_duplicate(card)
