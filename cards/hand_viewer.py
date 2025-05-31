@@ -1,6 +1,6 @@
 import tkinter as tk
-from card import Card, Suit
-from pile import Pile
+from .card import Card, Suit
+from .pile import Pile
 
 def show_card_window(card: Card):
     win = tk.Toplevel()
