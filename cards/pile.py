@@ -30,7 +30,7 @@ class Pile:
         return display_string     
     
     def group_by_suit(self) -> dict:
-        from card import Suit
+        from .card import Suit
         suit_map = {suit: [] for suit in Suit} #creates the empty hand to fill
         for card in self.cards:
             suit_map[card.suit].append(card)
