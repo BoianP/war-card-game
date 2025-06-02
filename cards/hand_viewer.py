@@ -1,15 +1,27 @@
 import tkinter as tk
+from PIL import Image, ImageTk
 from .card import Card, Suit
 from .pile import Pile
 
-def show_card_window(card: Card):
+directory = os.path.join(os.getcwd(), "card images") 
+
+def show_card_window(c: Card):
     win = tk.Toplevel()
-    win.title("Card Detail")
-    win.geometry("200x100")
+    win.title("Card")
+    win.geometry("170x200")
 
-    label = tk.Label(win, text=str(card), font=("Helvetica", 20))
-    label.pack(pady=20)
+    card_file = f"{Card.rank_names[c.rank]}_of_{c.suit.display_name}.png"
+    full_path = os.path.join(directory, card_file)
 
+    if not os.path.isfile(full_path):
+        tk.Label(win, text="Image not found", fg="red").pack(pady=20)
+    else:
+        img = Image.open(full_path)
+        tk_img = ImageTk.PhotoImage(img)
+        label = tk.Label(win, image=tk_img)
+        label.pack(pady=5)
+        win.image = tk_img
+        
 def show_hand_window(cards: list[Card]):
     window = tk.Tk()
     window.title("Your Hand")

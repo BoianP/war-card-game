@@ -1,4 +1,4 @@
-from PIL import Image, ImageTk
+
 import os
 import shelve
 #from pathlib import Path
